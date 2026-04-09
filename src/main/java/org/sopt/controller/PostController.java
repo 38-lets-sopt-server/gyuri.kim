@@ -36,11 +36,13 @@ public class PostController {
             return postService.getPost(id);
         } catch (PostNotFoundException e) { //심화 과제1
             System.out.println("존재하지 않는 ID입니다" + e.getMessage());
+            return null;
         }catch (IllegalArgumentException e){
             System.out.println("에러 메시지" + e.getMessage());
             return null;
         }
-    } //e.getMessage를 통해 문자열이 예외 객체 안에 편지처럼 저장된다.
+    }
+    //e.getMessage를 통해 문자열이 예외 객체 안에 편지처럼 저장된다.
         // IllegalArgumentException : 적절하지 않은 인자 예외, 어떤 이유 때문에 예외가 발생했는지 메시지를 남기기 위해 사용한다.
     // PUT /posts/{id} 📝 과제
     public void updatePost(Long id, String newTitle, String newContent) {
