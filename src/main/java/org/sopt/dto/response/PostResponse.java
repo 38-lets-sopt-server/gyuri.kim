@@ -7,13 +7,13 @@ public class PostResponse {
     public String title;
     public String content;
     public String author;
-    public String CreatedAt;
+    public String created_at;
 
     public PostResponse(Long id, String title, String content, String author, String CreatedAt){
         this.id = id;
         this.title = title;
         this.content = content;
         this.author = author;
-        this.CreatedAt = CreatedAt;
+        this.created_at = created_at;
     }
 }
