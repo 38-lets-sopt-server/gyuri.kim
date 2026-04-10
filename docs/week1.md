@@ -50,3 +50,19 @@ postnotfoundexception.java는 예외를 정의하는 곳이고, exceptionhandler
 그렇다면 (1) PostNotFoundException을 잡는 메서드와 (2)IllegalArgumentException을 잡는 메서드,
 
 총 2개의 메서드가 ExceptionHandler에 필요할 것이다.>!
+
+### 오마이갓...ㅜㅜ
+ExceptionHandler를 만들었다..
+id가 없을때는 postnotfoundexception으로 하고, 그 외의 에러는 자바에서 제공하는 
+illegal~~ 로 처리했다. 그리고 그 두개를 ExceptionHandler에 담았다.
+
+근데 ExceptionHandler가 CreatePost도 반환하고, PostResponse를 반환해야 하는데.. 반환타입이 달라져야 한다..
+근데 그렇다고 다 따로 쓰자니.. ExceptionHandler를 만든 이유가 없다..?
+
+그래서 결국 미뤄놨던 DTO 구조를 만들기로...했다... (새벽 1시.. 내일 세미난데..ㅜㅜ)
+
+근데 계속 자바기초가 부족해서인지.. 계속 헷갈린다..
+public 반환타입 메서드이름 파라미터
+이런 식으로 쓰는데
+final, static 이런거는 반환타입 앞에 쓰는데
+static 뒤에도 타입..?을 작성한다..?
