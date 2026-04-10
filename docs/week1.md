@@ -45,4 +45,8 @@ postnotfoundexception.java는 예외를 정의하는 곳이고, exceptionhandler
 예외를 그냥 정의..한 것이었다..)
 
 그러면..controller에서는 println을 하지 않고, try catch도 없고..
-그냥 id..만 반환하면 되는건가?
+그냥 id..만 반환하면 되는거겠지..
+
+그렇다면 (1) PostNotFoundException을 잡는 메서드와 (2)IllegalArgumentException을 잡는 메서드,
+
+총 2개의 메서드가 ExceptionHandler에 필요할 것이다.>!
