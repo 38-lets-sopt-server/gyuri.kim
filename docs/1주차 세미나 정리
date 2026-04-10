@@ -1,0 +1,22 @@
+### 구조
+클래스 안에 필드들을 작성..
+
+그 안에 생성자 -> 인스턴스를 만들 때 초기값을 세팅
+public Post (Long id, ~~) {this.id = id; this.title = title; ~~;}}
+
+인스턴스 생성 Post post = new Post (~~)
+
+### Getter/Setter
+메서드를 통해서 값을 꺼내거나 바꾼다.
+
+1. Getter - 값을 꺼낼 때 사용
+public String getTitle(){
+    return this.title;
+}
+
+2. Setter - 값을 바꿀 때 사용
+public void setTitle(String title){
+    this.title = title;
+}
+
+
