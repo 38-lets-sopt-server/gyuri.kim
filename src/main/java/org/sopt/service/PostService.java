@@ -4,6 +4,7 @@ import org.sopt.domain.Post;
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
+import org.sopt.exception.ExceptionHandler;
 import org.sopt.exception.PostNotFoundException;
 import org.sopt.validator.PostValidator;
 import org.sopt.repository.PostRepository;
@@ -13,7 +14,6 @@ import java.util.List;
 
 public class PostService {
     private final PostRepository postRepository = new PostRepository();
-    // CREATE -> PostValidator로 옮기자
     public CreatePostResponse createPost(CreatePostRequest request) {
         //심화과제2
         PostValidator.validatePost(request.title, request.content);
@@ -32,7 +32,6 @@ public class PostService {
     public List<PostResponse> getAllPosts() {
         // TODO
         List<Post>posts = postRepository.findAll();
-        //일단 post 타입으로 제한한다. 레포지토리에서 posts를 그대로 가져온다.
         List<PostResponse> responses = new ArrayList<>();
         //사용자가 보게 될 반환값
         //서버 개발에서는 보안이나 효율성을 위해 내부 데이터를 그대로 내보내지 않고, 보여줄 데이터만 추린
@@ -54,9 +53,7 @@ public class PostService {
     public PostResponse getPost(Long id) {
         // TODO
         Post post = postRepository.findById(id);
-        //위와는 달리, id로 불러오기
         if (post==null){
-        //    throw new IllegalArgumentException("id에 해당하는 게시글 없음");
         //심화 과제
             throw new PostNotFoundException(id);
         }
@@ -74,7 +71,7 @@ public class PostService {
         // TODO
         Post post = postRepository.findById(id);
         if (post==null){
-            throw new IllegalArgumentException("id에 해당하는 게시글 없음");
+            throw new PostNotFoundException(id);
         }
         if (newTitle == null || newTitle.isBlank()){
             throw new IllegalArgumentException("제목 추가하세요");
@@ -84,25 +81,14 @@ public class PostService {
         }
         post.update(newTitle, newContent);
     }
-//여기서 response를 만들지 않는 이유... 로는 updatePost가 변경을 목적으로 하고 있어서..라고 한다.
-    //서버의 효율적인 역할 분담을 위해서..라고 하는데, "변경"이 목적이기 때문에 "조회"까지는 역할을 맞지 않아도 된다는 것으로 이해했다.
-    //서버의 역할 분담에 있어서 개발자가 어떻게 반환할 것이고, 화면 설계서에 따라 어떤 기능까지의 역할을 하나에 담을 것인지가 중요할 것 같았다.
-//여기서 post에서 내용물을 바꾸는 것은 통째로 수정이 아니라, 일부를 바꾸는 것이기 때문
-    //변수값만 교체하는 것일 뿐. 객체는 그대로 남아있다.
 
     // DELETE 📝 과제
     public void deletePost(Long id) {
         // TODO
         Post post = postRepository.findById(id);
         if(post==null){
-            throw new IllegalArgumentException("삭제할 게시글 없음");
+            throw new PostNotFoundException(id);
         }
         postRepository.deleteById(id);
     }
 }
-//근데, PostRepository에서 boolean을 사용해서 구현했던 것이 기억나서 해보려고도 했습니다
-//boolean isDeleted = postRepository.deleteById(id);
-//if(!isDeleted){
-// throw new Illegal~~
-
-//위와 달리 여기서는 postRepository에서 deleteById를 하게 되었는데, 이유는 아예 ArrayList에서 객체를 삭제하는 것이기 때문.
