@@ -29,7 +29,7 @@ public class PostController {
         try {
             return postService.getPost(id);
         } catch (PostNotFoundException e) {
-            return exceptionHandler.handleId(e);
+            return null;
         }
     }
     // PUT /posts/{id} 📝 과제
