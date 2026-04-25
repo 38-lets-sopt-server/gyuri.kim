@@ -6,71 +6,71 @@ import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.exception.PostNotFoundException;
-import org.sopt.validator.PostValidator;
+import org.sopt.repository.UserRepository;
+import org.sopt.exception.NotFoundException;
+import org.sopt.exception.ErrorCode;
+import org.sopt.domain.User;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class PostService {
     private final PostRepository postRepository;
-    public PostService(PostRepository postRepository) {
+    private final UserRepository userRepository;
+
+    public PostService(
+            PostRepository postRepository,
+            UserRepository userRepository
+    ) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
+
+    @Transactional
     public CreatePostResponse createPost(CreatePostRequest request) {
-        PostValidator.validatePost(request.title(), request.content());
-        String createdAt = java.time.LocalDateTime.now().toString();
-        Post post = new Post(postRepository.generateId(), request.title(), request.content(), request.author(), createdAt);
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        Post post = new Post(request.title(), request.content(), user);
         postRepository.save(post);
         return new CreatePostResponse(post.getId(), "게시글 등록 완료!");
     }
-    // READ - 전체 📝 과제 -> 게시판 목록 확인
+
+    //READ - 전체 -> 게시판 목록 확인
+    /* 조회 전용 -> 더티 채킹 안 함 -> 성능 최적화*/
+    @Transactional (readOnly = true)
     public List<PostResponse> getAllPosts() {
-        List<Post>posts = postRepository.findAll();
-        List<PostResponse> responses = new ArrayList<>();
-        for(Post post : posts){
-            PostResponse item = new PostResponse(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getAuthor(),
-                    post.getCreatedAt()
-            );
-            responses.add(item);
-        }
-        return responses;
+        return postRepository.findAll()
+                .stream()
+                .map(PostResponse::from)
+                .toList();
     }
 
-    // READ - 단건 📝 과제 -> 특정 글 가져와서 상세 내용 보여주기 -> 원본 꺼내고 검증하고, 반환하기
+    // READ - 단건 -> 특정 글 가져와서 상세 내용 보여주기 -> 원본 꺼내고 검증하고, 반환하기
+    @Transactional(readOnly = true)
     public PostResponse getPost(Long id) {
         // Optional 로 수정.
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
-        return new PostResponse(
-                post.getId(),
-                post.getTitle(),
-                post.getContent(),
-                post.getAuthor(),
-                post.getCreatedAt()
-        );
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        //"new"가 아니라, DB가 이제는 있으니까, 그냥 response from post하면 된다.
+        //Q. 그러면 반환해올 때, id, title, content, author, createdat은 안 가져와도 되나?
+        return PostResponse.from(post);
     }
 
-    // UPDATE 📝 과제 -> 고칠 글이 있는 지 id로 찾고, 50자 제한 확인한다.
-    //Optional<Post>를 Post로 못 받는다..
-    public void updatePost(Long id, UpdatePostRequest request) { //파라미터 변경함
+    // UPDATE
+    @Transactional
+    /*3주차 세미나 변경 사항_ 더티체킹으로 save 없이 자동 update한다. */
+    public PostResponse updatePost(Long id, UpdatePostRequest request) { //파라미터 변경함
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
-        if (request.title() == null || request.title().isBlank()){
-            throw new IllegalArgumentException("제목 추가하세요");
-        }
-        if (request.title().length() > 50){
-            throw new IllegalArgumentException("50자 제한 초과");
-        }
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         post.update(request.title(), request.content());
+        return PostResponse.from(post);
     }
 
-    // DELETE 📝 과제
+    // DELETE
     public void deletePost(Long id) {
         postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));

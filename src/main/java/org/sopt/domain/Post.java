@@ -2,6 +2,7 @@ package org.sopt.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeId;
 
+@Entity
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
