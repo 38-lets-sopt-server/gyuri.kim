@@ -1,113 +1,4 @@
 ## 2주차 세미나(이론) 내용 정리
-### 유효성 검증
-- Controller
-- Service
-
-(domain에서 던지는 것과 service에서 던지는 것의 차이를 알아보자.)
-
-### 순차지향 -> 절차지향 -> 객체지향
-
-- "객체 = 책임을 가지고 특정 역할을 수행하는 독립적인 단위"
-
-- PostService - CRUD 로직 처리 - 게시글 생성 로직
-- Post - 게시글 데이터 보관 책임 - 게시글 데이터 구조 변경
-
-- 객체지향의 필수조건 -> OOP (캡슐화, 추상화, 상속, 다형성)
-
-- SOLID -> 선택사항
-
-- elseif의 반복은 CPU를 낭비한다. -> 추상화를 적용하면? 문제 해결!
-
-### 다형성
-1. 오버로딩 - 같은 이름, 다른 매개변수의 메서드 여러 개
-2. 오버라이딩 - 부모 메서드를 자식 클래스가 재정의
-
-### SOLID 원칙
-- S - SRP - 단일 책임 원칙 (클래스는 하나의 일)
-- O - OCP - 개방-폐쇄 원칙 (기존 코드 수정x, 새 기능 확장)
-- L - LSP - 부모 타입은 언제나 자식으로 교체 가능해야 함 (리스코프 치환 원칙)
-- I - ISP - (인터페이스 분리 원칙)거대한 인터페이스보다 작은 인터페이스 여럿이 낫다
-- D - DIP - (의존 역전 원칙) 구체 클래스가 아닌 추상화에 의존
-
-- (컨트롤러에서 각각의 인터페이스 만들고, 이를 상속해서 기능 구현하도록 할 수도 있음)
-
-### HTTP의 핵심 특성
-- 비연결성 - 서버는 클라이언트와 계속 연결을 유지하지는 않는다
-- 무상태성 - 서버는 이전 요청을 기억하지 않는다.
-- 로그인 상태 유지 같은 것은 JWT, 세션 같은 별도 방식으로 해결한다.
-
-
-### 멱등성
-- 같은 요청을 여러 번 해도 결과가 변하지 않는 성질
-- (POST)는 멱등하지 않다.
-
-### RestAPI - 자원 중심 설계
-(URL, URI 차이점 알아보기)
-- Client, Server 분리
-- Stateless : 매 요청은 독립적
-- Uniform Interface
-- Layered System
-
-(스프링부트 실행 시, 저절로 뜨는 로그들을 공부해보면, 심화된 공부를 할 수 있을 것!)
-
-### IoC/DI
--Spring은 IoC (제어의 역전) + DI (의존성 주입)
-
-### Bean -> Spring이 관리하는 객체
-- 어노테이션을 붙이면, Spring이 알아서 클래스를 Bean으로 등록하고 관리해줌
-
-
-### 의존성 주입 방식
-1. 생성자 주입
-- final 로 불변성 보장
-- 순환 참조를 컴파일 시점에 감지 (필드 주입은 앱이 실행될때까지 모르다가 런타임에 터진다)
-- 테스트 용이성 (Spring 없이도 테스트 가능)
-
-2. 필드 주입
-3. Setter 주입
-
-### DTO의 역할 (Data Transfer Object)
-- 클라이언트가 서버 내부 구조를 몰라야 한다.
-- 클라이언트가 서버가 알아야 할 값을 마음대로 설정할 수 없어야 한다.
-: DTO는 계층 간 데이터를 명시적으로 정의하는 계약
-
-### DTO -> POST 변환
-1) 만약 COntroller에서 변환
-- Service가 Post 도메인 객체에만 의존하게 되어 재사용성 높아짐
-2) Service에서 반환
-- id 발급이 Service->Repository 통해 이뤄지기 때문에, 추가로직이 필요한 경우 Service에서 변환하는 게 자연스럽다.
-
-
-- Spring REST API에서는 ResponseEntity를 써서 HTTP 상태 코드까지 함께 내려준다.
-- 클라이언트는 상태 코드를 보고 성공 방법과 여부를 파악
-- Response 객체 + 상태코드 반환해야 한다.
-
-### 자바 예외 계층 구조
-1. Checked Exception
-- try-catch로 감싸거나 throws로 선언하는 데에 이상 생길 시 컴파일 불가
-- 파일, 네트워크, DB접근 등 외부 요인으로 인한 실패에 사용
-
-2. Unchecked Exception
-- 컴파일러가 강제 x, 논리적 오류를 표현할 때 사용
-
-### 커스텀 예외 만들기
--> 심화 과제1
-
-### ExceptionHandler
--> 내가 1차 과제에서 느꼈던 불편함..과 그 해결책인 핸들러!
-try catch 말고, Spring에서는 @RestControllerAdvice 제공 -> 모든 Controller에서 발생하는 예외를 한 곳에서 처리
-
-
-PostService에서 PostNotFoundException 던짐
-↓
-Controller는 잡지 않고 위로 올림
-↓
-Spring이 GlobalExceptionHandler로 전달
-↓
-handlePostNotFound() 메서드가 실행됨
-↓
-404 + 에러 메시지를 클라이언트에게 반환
-
 
 ### 1차 세미나에서 바뀐 점
 - 입력 방식 : Scanner -> HTTP 요청 (@RequestBody, @PathVariable)
@@ -116,3 +7,193 @@ handlePostNotFound() 메서드가 실행됨
 - 통신 형식 : 훔수 직접 호출 -> REST API 엔드포인트
 - 예외처리 : try-catch 직접 처리 -> @ExceptionHandler 중앙 처리
 
+### HTTP 메서드
+Get - 데이터 조회 - 게시글 목록 가져오기
+Post - 데이터 생성 - 게시글 작성하기
+Put - 데이터 전체 수정 - 게시글 전체 내용 교체
+Patch - 데이터 일부 수정 - 게시글 제목만 수정
+Delete - 데이터 삭제 - 게시글 삭제하기
+
+> 멱등 : 같은 요청을 여러 번해도 결과가 바뀌지 않는 성질.
+>> Get, Put, Delete은 멱등하다.
+> Post는 멱등하지 않다. 
+
+### HTTP 메시지 구조
+1. 요청
+   POST /posts HTTP/1.1                    ← Start Line (메서드 + URL + HTTP 버전)
+   Content-Type: application/json          ← Header (부가 정보)
+   Authorization: Bearer eyJhbGci...
+
+{                                       ← Body (실제 전달 데이터)
+"title": "오늘 학식 뭐임",
+"content": "돈까스래"
+}
+
+2. Body에 담기는 데이터 형식 - JSON
+   {
+   "id": 1,
+   "title": "오늘 학식 뭐임",
+   "content": "돈까스래",
+   "author": "익명"
+   }
+
+3. 응답
+   HTTP/1.1 201 Created                   ← Status Line (HTTP 버전 + 상태 코드 + 메시지)
+   Content-Type: application/json         ← Header
+
+{                                      ← Body
+"id": 1,
+"title": "오늘 학식 뭐임",
+"author": "익명"
+}
+
+### Rest API
+- Client-Server 분리 - 클라이언트와 서버코드는 독립적 발전
+- Stateless - 매 요청은 독립적
+- Uniform Interface - 직관적으로 행위를 알 수 있어야
+- Layered System - 클라이언트는 자신이 어떤 서버에 요청을 보내는 지 몰라도 된다.
+
+### 에브리타임 화면 설계서 정보 구조도
+[자유게시판 목록]
+1. 상단 네비게이션 바
+2. 광고 배너 (외부 광고)
+3. 고정/추천 게시글 카드  >> 서버에서 가져와야 함!
+4. 인기 게시글(Hot)
+5. 게시글 피드 (스크롤)
+- 제목, 미리보기, 에타  >> 서버에서 가져와야 함!
+6. FAB '글쓰기 버튼'
+
+[게시글 상세]
+1. 상단 네비게이션 바
+2. 작성자 정보 (아바타/닉네임/시간)  >> 서버에서 가져와야 함!
+3. 게시글 본문 (제목+내용)  >> 서버에서 가져와야 함!
+4. 액션바 (공감/댓글/스크랩)
+5. 광고 배너
+6. 댓글 목록 (스크롤)  >> 서버에서 가져와야 함!
+- 댓글 (아바타/닉네임/내용)
+- 대댓글 (들여쓰기, 화살표 표시)
+7. 하단 댓글 입력바 (익명/입력/전송)
+
+[글 쓰기]
+1. 상단 바 (닫기/완료)
+2. 제목 입력 필드
+3. 본문 입력 필드
+4. 커뮤니티 이용규칙 안내
+- 규칙 전체 보기 링크
+- 규칙 요약 텍스트
+5. 하단 툴바
+- 카메라/링크 첨부
+- 질문 토글/익명 토글
+
+### 와인잔 조 API 명세서... 끄적여보기
+[수업 내용]
+GET    /posts          → 게시글 목록 조회
+POST   /posts          → 게시글 작성
+GET    /posts/1        → 1번 게시글 조회
+PUT    /posts/1        → 1번 게시글 수정
+DELETE /posts/1        → 1번 게시글 삭제
+
+get이랑 delete은 보통 Body가 없다.
+URL 자체가 이미 뭘 원하는지를 말해주고 있기 때문
+
+따라서 우리가 작성해야 할 것은?
+
+1. 게시글 목록
+2. 게시글 상세
+3. 게시글 작성
+4. 게시글 수정
+5. 게시글 삭제
+
+채워야 하는 것은? 
+> Method / URL / Request Body / Response Body / 상태코드
+
+### 1. 게시글 목록 - 자유게시판 목록 화면
+Method : GET
+URL : /posts
+Request Body : 없음
+Response Body: List
+
+- id: Long
+- author: String
+- createdAt: LocalDateTime
+- title : String
+- content: String
+- likeCount: int
+- commentCount: int
+
+상태 코드 : 200 OK
+실패 : 없음 (빈 배열 반환)
+
+### 2. 게시글 상세 조회 - 게시글 상세 화면
+Method : GET
+URL : /posts/{id}
+Request Body: 없음
+Response Body:
+
+- id : Long
+- author : String
+- createdAt : LocalDateTime
+- title : String
+- content : String
+- commentCount: int
+- comments : List
+- {id : Long, 
+- author : String, 
+- content : String, 
+- createdAt : LocalDateTime}
+
+상태코드 : 200 OK
+실패 : 404 Not Found - 게시글 id 존재하지 않음
+
+> 이걸 똑같이 author로 받아도 될까요...?? 뭔가 cauthor이라던지...로 나눠야 할까요?
+
+### 3. 게시글 작성 - 글쓰기 화면
+Method : POST
+URL : /posts
+Request Body:
+- title : String
+- content: String
+- isAnonymous : boolean
+- isQuestion : boolean
+> 카메라/링크 첨부는 어떤 식으로 구현해야 할까요?
+> 에타에는 질문토글 기능이 없는데, 화면 설계서에는 있어서 일단 구현해보았어요
+
+Response Body:
+- id : Long
+
+> 게시글 작성 성공 후에 '게시글 상세'로 다시 돌아가야 한다. 그러면..? id + title + content + 첨부한 파일을 가져오면 되지 않나
+> 근데 이건 찾아보니까 어차피 상세 페이지로 이동할 때 다시 상세 조회 API를 호출하므로 title, content는 response에 넣지 않아도 된다고 한다.
+
+상태코드 : 201 Created
+실패 : 400 Bad Request - title/content가 올바르지 않은 경우
+
+> 200은 그냥 성공. 201은 "새로운 리소스가 생성됨"->게시글 작성 성공했음을 의미
+
+### 4. 게시글 수정 - 글쓰기 수정 화면
+Method : PUT
+URL : /posts/{id}
+Request Body:
+- title : String
+- content : String
+- isAnonymous : boolean
+
+Response Body: 없음
+
+> 수정도 게시글 작성과 같은 구조라면, 굳이 나눌 필요가 없을 것 같아서 화면 설계서를 봤는데 사용자가 수정할 때의 화면설계서는 없어서
+> 임의로 생각해보았어요.. 익명이랑 질문토글은 굳이 필요할까 싶다가도, 실수로 실명으로 올렸는데, 익명으로 바꿀 수 있어야 하니까 그냥 질문 토글만 뺐어요
+
+상태코드 : 200 OK
+실패 : 존재하지 않는 게시글 id의 경우 404 Not Found
+title이나 content 가 올바르지 않을 경우 400 Bad Request
+
+### 5. 게시글 삭제 - 게시글 상세 화면
+Method : DELETE
+URL : /posts/{id}
+Request Body: 없음
+Response Body: 없음
+
+상태코드 : 204 No Content
+실패 : 404 Not found - 존재하지 않는 게시글 id
+
+### 개발을 하며..
+두시간동안... 500에러를 잡지 못했어요...ㅠㅠㅠㅠ
