@@ -195,5 +195,12 @@ Response Body: 없음
 상태코드 : 204 No Content
 실패 : 404 Not found - 존재하지 않는 게시글 id
 
-### 개발을 하며..
-두시간동안... 500에러를 잡지 못했어요...ㅠㅠㅠㅠ
+
+## 💡 와인잔조 코드리뷰하며 배운 점
+
+[자윤님] 내 코드는 LocalDateTime.toString() 그대로 반환하는데, 자윤님 코드는 createdAt을 사용자 친화적인 형식으로 포맷팅하는 걸 보고, 
+내 코드에도 반영해봐야겠다고 생각했다. 클라이언트가 날짜를 직접 파싱하지 않아도 되니까 더 편리할 것 같다.
+
+"post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))"
+
+
