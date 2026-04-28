@@ -107,3 +107,40 @@
 
 
 - [ ] 에러 메시지 관리 체계화: PostNotFoundException의 메시지 포맷(POST_001 등)을 별도 상수나 Enum으로 분리 관리
+
+## 3주차 과제
+
+- Post — 일반 클래스 → @Entity로 DB 테이블과 매핑
+
+
+- **PostRepository** — 직접 구현한 ArrayList 저장소 → JpaRepository
+
+
+- PostService — ArrayList 로직 → JpaRepository + @Transactional
+
+
+- [ ] User 엔티티를 만들고, Post에 작성자 연관관계를 추가. 게시글 작성 시 userId를 받아서 연결하기
+
+
+- [ ] 전체 API에 Swagger 어노테이션을 적용하고, Swagger UI에서 API를 직접 테스트하기. 테스트 화면을 PR에 첨부
+
+
+- [ ] BaseTimeEntity를 게시글에 적용하기
+
+
+- [ ] Like 엔티티를 만들고, 좋아요 추가/취소 API를 구현하기.
+  같은 유저가 같은 게시글에 중복 좋아요를 누를 수 없게 예외처리하기
+
+
+- [ ] 게시글 목록 조회 시 좋아요 수도 함께 반환해주기. N+1 문제가 발생하지 않도록 fetch join을 적용하고, 
+적용 전후 실행되는 쿼리를 show-sql: true로 확인해서 PR에 비교해서 첨부하기
+
+
+- [ ] 좋아요 동시성 문제를 @Version으로 해결하고, 낙관적 락 충돌 시 재시도 로직을 구현하기
+
+
+- [ ] 게시글을 제목으로 검색하는 API를 JPQL @Query를 사용해서 구현해주세요. 검색 결과에 작성자 닉네임도 함께 반환하고, fetch join으로 N+1이 발생하지 않도록 하기
+
+
+- [ ] PostRepositoryCustom 인터페이스와 PostRepositoryCustomImpl 구현체를 만들고, 위의 검색 기능을 QueryDSL로 재구현하기
+제목 키워드와 작성자 닉네임을 동시에 받아 동적으로 조건을 조합해주세요. PostRepository가 JpaRepository와 PostRepositoryCustom을 함께 상속하도록 구성하기
