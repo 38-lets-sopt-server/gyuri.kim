@@ -139,8 +139,10 @@
 - [ ] 좋아요 동시성 문제를 @Version으로 해결하고, 낙관적 락 충돌 시 재시도 로직을 구현하기
 
 
-- [ ] 게시글을 제목으로 검색하는 API를 JPQL @Query를 사용해서 구현해주세요. 검색 결과에 작성자 닉네임도 함께 반환하고, fetch join으로 N+1이 발생하지 않도록 하기
+- [ ] 게시글을 제목으로 검색하는 API를 JPQL @Query를 사용해서 구현하기. 검색 결과에 작성자 닉네임도 함께 반환하고, fetch join으로 N+1이 발생하지 않도록 하기
 
 
 - [ ] PostRepositoryCustom 인터페이스와 PostRepositoryCustomImpl 구현체를 만들고, 위의 검색 기능을 QueryDSL로 재구현하기
-제목 키워드와 작성자 닉네임을 동시에 받아 동적으로 조건을 조합해주세요. PostRepository가 JpaRepository와 PostRepositoryCustom을 함께 상속하도록 구성하기
+
+
+- [ ] 제목 키워드와 작성자 닉네임을 동시에 받아 동적으로 조건을 조합하기. PostRepository가 JpaRepository와 PostRepositoryCustom을 함께 상속하도록 구성하기
