@@ -1,6 +1,5 @@
 package org.sopt.domain;
-
-import com.fasterxml.jackson.annotation.JsonTypeId;
+import jakarta.persistence.*;
 
 @Entity
 public class Post {
@@ -9,8 +8,6 @@ public class Post {
     private Long id;
     private String title;
     private String content;
-    //private String author;
-    //private String createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)  // User : Post = 1 : N
     @JoinColumn(name = "user_id")       // post 테이블에 user_id FK 컬럼이 생겨요
@@ -18,11 +15,10 @@ public class Post {
 
     protected Post(){}
 
-    public Post(String title, String content, String author, String createdAt) {
+    public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;
-        this.author = author;
-        this.createdAt = createdAt;
+        this.user = user;
     }
     public void update(String title, String content) {
         this.title = title;
@@ -32,11 +28,6 @@ public class Post {
     public Long getId() { return this.id; }
     public String getTitle() { return this.title; }
     public String getContent() { return content; }
-    public String getAuthor() { return author; }
-    public String getCreatedAt() { return createdAt; }
+    public String getAuthor() { return user.getNickname(); }
 
-
-    public String getInfo() {
-        return "[" + id + "] " + title + " - " + author + " (" + createdAt + ")\n" + content;
-    }
 }
