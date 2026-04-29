@@ -6,10 +6,11 @@ import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.repository.UserRepository;
-import org.sopt.exception.NotFoundException;
 import org.sopt.exception.ErrorCode;
 import org.sopt.domain.User;
 import org.sopt.repository.PostRepository;
+import org.sopt.validator.PostValidator;
+import org.sopt.exception.BaseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +32,9 @@ public class PostService {
 
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest request) {
+        PostValidator.validatePost(request.title(), request.content());
         User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
         Post post = new Post(request.title(), request.content(), user);
         postRepository.save(post);
         return new CreatePostResponse(post.getId(), "게시글 등록 완료!");
@@ -53,7 +55,7 @@ public class PostService {
     public PostResponse getPost(Long id) {
         // Optional 로 수정.
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
         //"new"가 아니라, DB가 이제는 있으니까, 그냥 response from post하면 된다.
         //Q. 그러면 반환해올 때, id, title, content, author, createdat은 안 가져와도 되나?
         return PostResponse.from(post);
@@ -63,8 +65,9 @@ public class PostService {
     @Transactional
     /*3주차 세미나 변경 사항_ 더티체킹으로 save 없이 자동 update한다. */
     public PostResponse updatePost(Long id, UpdatePostRequest request) { //파라미터 변경함
+        PostValidator.validatePost(request.title(), request.content());
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
         post.update(request.title(), request.content());
         return PostResponse.from(post);
     }
@@ -72,7 +75,7 @@ public class PostService {
     // DELETE
     public void deletePost(Long id) {
         postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
         postRepository.deleteById(id);
     }
 }

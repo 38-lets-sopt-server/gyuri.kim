@@ -9,18 +9,23 @@ package org.sopt.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다");
+    POST_NOT_FOUND("POST_001", HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다"),
+    USER_NOT_FOUND("USER_001", HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다");
 
+    private final String code;
     private final HttpStatus httpStatus;
     private final String message;
     //캡슐화를 위해 final로 지정
 
-    ErrorCode(HttpStatus httpStatus, String message) {
+    ErrorCode(String code, HttpStatus httpStatus, String message) {
+        this.code = code;
         this.httpStatus = httpStatus;
         this.message = message;
     }
     //getter 추가
+    public String getCode(){
+        return code;
+    }
     public String getMessage(){
         return message;
     }
