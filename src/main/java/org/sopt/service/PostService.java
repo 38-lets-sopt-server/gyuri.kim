@@ -5,7 +5,6 @@ import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
-import org.sopt.exception.PostNotFoundException;
 import org.sopt.repository.UserRepository;
 import org.sopt.exception.NotFoundException;
 import org.sopt.exception.ErrorCode;
@@ -13,7 +12,7 @@ import org.sopt.domain.User;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Service

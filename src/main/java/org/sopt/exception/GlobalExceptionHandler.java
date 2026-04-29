@@ -1,5 +1,6 @@
-package org.sopt.exception;
+//예외를 잡아서 HTTP 응답으로 변환.!
 
+package org.sopt.exception;
 import org.sopt.dto.response.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<?> handlePostNotFound(PostNotFoundException e) {
+    @ExceptionHandler(BaseException.class)
+    public ResponseEntity<?> handleBaseFound(BaseException e) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(e.getErrorCode().getHttpStatus())
                 .body(CommonResponse.fail(e.getMessage()));
-        //CommonResponse fail을 생성했으므로, e.getMessage로 가져온다!
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

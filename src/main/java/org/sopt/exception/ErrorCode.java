@@ -1,7 +1,8 @@
 //PostService에서 예외 던지고
 //PostNotFoundException 발생
 //GlobalExceptionHandler가 잡아서 HTTP 응답으로 변환
-//ErrorCode에서 에러코드 목록 모음
+
+//ErrorCode에서 상태코드 + 메시지 보관한다.
 
 package org.sopt.exception;
 
