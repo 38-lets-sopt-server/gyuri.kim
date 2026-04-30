@@ -19,7 +19,7 @@ public class Post extends BaseTimeEntity{
     @JoinColumn(name = "user_id")       // post 테이블에 user_id FK 컬럼이 생겨요
     private User user;
 
-    @Column(name = "deleted_at")
+    @Column(name = "deleted_at") //소프트 딜리트 구현!
     private LocalDateTime deletedAt;
 
     protected Post(){}
