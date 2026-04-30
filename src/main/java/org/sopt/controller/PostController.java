@@ -3,7 +3,7 @@ package org.sopt.controller;
 import jakarta.validation.Valid;
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
-import org.sopt.dto.response.CommonResponse;
+import org.sopt.dto.response.BaseResponse;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.service.PostService;
 import org.sopt.dto.response.PostResponse;
@@ -22,25 +22,25 @@ public class PostController {
 
     // POST /posts -> 201 created
     @PostMapping
-    public ResponseEntity<CommonResponse<CreatePostResponse>> createPost(
+    public ResponseEntity<BaseResponse<CreatePostResponse>> createPost(
             @Valid @RequestBody CreatePostRequest request
     ) {
         CreatePostResponse response = postService.createPost(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.success(response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(response));
     }
 
     // GET /posts -> 200 OK
     @GetMapping
-    public ResponseEntity<CommonResponse<List<PostResponse>>> getAllPosts( ) {
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPosts( ) {
         List<PostResponse> response = postService.getAllPosts();
-        return ResponseEntity.ok(CommonResponse.success(response));
+        return ResponseEntity.ok(BaseResponse.success(response));
     }
 
     // GET /posts/{id} -> 200 OK
     @GetMapping("/{id}")
-    public ResponseEntity<CommonResponse<PostResponse>> getPost(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<PostResponse>> getPost(@PathVariable Long id) {
         PostResponse response = postService.getPost(id);
-        return ResponseEntity.ok(CommonResponse.success(response));
+        return ResponseEntity.ok(BaseResponse.success(response));
     }
 
     // PUT /posts/{id}
