@@ -1,8 +1,19 @@
 ## 3주차 세미나(이론) 내용 정리
 
-공통응답 -> 500 따로 처리
+### JPA Auditing
 
-Service & Domain에서의 에러를 모두 처리해야..
+BaseTimeEntity : 생성일/수정일 자동 관리
 
-service 검증과 Domain 검증 기능이 있어야 함. -> DB에 잘못된 값이 들어가지 않도록!
+코드에서..
+@Getter
+@MappedSuperclass      
+@EntityListeners(AuditingEntityListener.class)   : Auditing 기능을 포함
+public abstract class BaseTimeEntity {
+
+    @CreatedDate           : Entity가 생성되어 저장될 때 시간이 자동 저장됨
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate       : 조회한 Entity의 값을 변경할 떄 시간이 자동 저장
+    private LocalDateTime updatedAt;
+}
 

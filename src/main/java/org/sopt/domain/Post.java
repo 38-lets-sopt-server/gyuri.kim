@@ -1,8 +1,14 @@
 package org.sopt.domain;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+import java.time.LocalDateTime;
 
 @Entity
-public class Post {
+@SQLDelete(sql = "UPDATE post SET deleted_at = NOW() WHERE id = ?")
+@Where(clause = "deleted_at IS NULL")
+public class Post extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -12,6 +18,9 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)  // User : Post = 1 : N
     @JoinColumn(name = "user_id")       // post 테이블에 user_id FK 컬럼이 생겨요
     private User user;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     protected Post(){}
 
@@ -28,6 +37,10 @@ public class Post {
     public Long getId() { return this.id; }
     public String getTitle() { return this.title; }
     public String getContent() { return content; }
-    public String getAuthor() { return user.getNickname(); }
+    public String getAuthor() {
+        return (user !=null) ? user.getNickname() : "익명";
+    }
+    public User getUser(){ return user; }
+    public LocalDateTime getDeletedAt(){ return deletedAt;}
 
 }
