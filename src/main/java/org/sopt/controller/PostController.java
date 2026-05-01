@@ -56,7 +56,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음 — 존재하지 않는 ID로 요청한 경우")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<PostResponse>> getPost(
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getPost(
             @Parameter(description = "게시글 ID", example = "1", required = true)
             @PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.success(postService.getPost(id)));

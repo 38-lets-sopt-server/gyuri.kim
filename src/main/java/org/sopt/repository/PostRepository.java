@@ -12,7 +12,7 @@ import java.util.List;
 //fetch join 적용해보기!
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("SELECT DINSTINCT p FROM Post p" +
+    @Query("SELECT DISTINCT p FROM Post p" +
     "JOIN FETCH p.user" +
     "LEFT JOIN FETCH p.likes")
     List<Post> findWithUserLikes();

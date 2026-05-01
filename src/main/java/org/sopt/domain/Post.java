@@ -1,6 +1,7 @@
 package org.sopt.domain;
 import jakarta.persistence.*;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @SQLDelete(sql = "UPDATE post SET deleted_at = NOW() WHERE id = ?")
-@Where(clause = "deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 public class Post extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,20 +39,11 @@ public class Post extends BaseTimeEntity{
         this.title = title;
         this.content = content;
     }
-    public List<Like> getLikes() {
-        return likes;
-    }
-
     public Long getId() { return this.id; }
     public String getTitle() { return this.title; }
     public String getContent() { return content; }
-    public String getAuthor() {
-        return (user !=null) ? user.getNickname() : "익명";
-    }
-    public User getUser(){ return user; }
-    public String getAuthorNickname() {
-        return this.user.getNickname();
-    }
+    public User getUser() { return user; }
+    public List<Like> getLikes() { return likes; }
     //이 author이랑 nickname이랑 꼬여서.. 어디서부터 수정해야 할지 모르겠어요
     public LocalDateTime getDeletedAt(){ return deletedAt;}
 
