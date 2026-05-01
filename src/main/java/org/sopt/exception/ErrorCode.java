@@ -16,7 +16,7 @@ public enum ErrorCode {
     //404 Not Found
     POST_NOT_FOUND("POST_001", HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다"),
     USER_NOT_FOUND("USER_001", HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"),
-
+    LIKE_NOT_FOUND("LIKE_002", HttpStatus.NOT_FOUND, "좋아요를 누르지 않았습니다"),
     //409 Conflict -> 이 두개는 ConflictException을 쓰는 곳이 없어서, 써볼려고 한번 작성해봤어요!
     //기능 구현도 추후에 해놓겠습니다!
     SAME_NICKNAME("USER_002", HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),

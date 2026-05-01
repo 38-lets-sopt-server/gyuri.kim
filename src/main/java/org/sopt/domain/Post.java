@@ -4,6 +4,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @SQLDelete(sql = "UPDATE post SET deleted_at = NOW() WHERE id = ?")
@@ -19,6 +21,9 @@ public class Post extends BaseTimeEntity{
     @JoinColumn(name = "user_id")       // post 테이블에 user_id FK 컬럼이 생겨요
     private User user;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();  // User : Post = N : 1 !
+
     @Column(name = "deleted_at") //소프트 딜리트 구현!
     private LocalDateTime deletedAt;
 
@@ -33,6 +38,9 @@ public class Post extends BaseTimeEntity{
         this.title = title;
         this.content = content;
     }
+    public List<Like> getLikes() {
+        return likes;
+    }
 
     public Long getId() { return this.id; }
     public String getTitle() { return this.title; }
@@ -41,6 +49,10 @@ public class Post extends BaseTimeEntity{
         return (user !=null) ? user.getNickname() : "익명";
     }
     public User getUser(){ return user; }
+    public String getAuthorNickname() {
+        return this.user.getNickname();
+    }
+    //이 author이랑 nickname이랑 꼬여서.. 어디서부터 수정해야 할지 모르겠어요
     public LocalDateTime getDeletedAt(){ return deletedAt;}
 
 }
