@@ -19,27 +19,46 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional (readOnly = true)
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
     public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
     }
 
+    //얘 이렇게 DB작업과 외부 작업 분리를 하는 게 맞을까요..? 이 부분에 대해 아직 이해가 안가요ㅠㅠ
     public CreatePostResponse createPost(CreatePostRequest request) {
+        //얘는 DB작업..?
+        Long savedPostId = savePostToDb(request);
+
+        //얘는 외부 작업..?
+        try {
+            System.out.println("게시글이 저장되었습니다." + savedPostId);
+        } catch(Exception e){
+            System.err.println("에러발생! : " + e.getMessage());
+        }
+        return new CreatePostResponse(savedPostId, "게시글 등록 완료!");
+    }
+
+    @Transactional
+    public Long savePostToDb (CreatePostRequest request){
         PostValidator.validatePost(request.title(), request.content());
-        User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
         if (request.title() == null || request.title().isBlank()) {
             throw new BadRequestException(ErrorCode.INVALID_INPUT_VALUE);
         }
+
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
         Post post = new Post(request.title(), request.content(), user);
         postRepository.save(post);
-        return new CreatePostResponse(post.getId(), "게시글 등록 완료!");
+
+        return post.getId();
     }
+
 
     //READ - 전체 -> 게시판 목록 확인
     /* 조회 전용 -> 더티 채킹 안 함 -> 성능 최적화*/
