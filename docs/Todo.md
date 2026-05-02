@@ -100,7 +100,7 @@
 - [ ] 검증 로직 통일: createPost와 updatePost에서 사용하는 검증 방식을 Validator 활용으로 단일화
 
 
-- [ ] 글자 수 제한 로직 추가: Validator 내에 50자 제한 검증 로직 반영
+- [X] 글자 수 제한 로직 추가: Validator 내에 50자 제한 검증 로직 반영
 
 
 - [ ] 정적 팩토리 메소드 도입: 객체 생성 시 from 메소드를 활용하여 가독성 및 유지보수성 향상
@@ -119,16 +119,16 @@
 - PostService — ArrayList 로직 → JpaRepository + @Transactional
 
 
-- [ ] User 엔티티를 만들고, Post에 작성자 연관관계를 추가. 게시글 작성 시 userId를 받아서 연결하기
+- [X] User 엔티티를 만들고, Post에 작성자 연관관계를 추가. 게시글 작성 시 userId를 받아서 연결하기
 
 
-- [ ] 전체 API에 Swagger 어노테이션을 적용하고, Swagger UI에서 API를 직접 테스트하기. 테스트 화면을 PR에 첨부
+- [X] 전체 API에 Swagger 어노테이션을 적용하고, Swagger UI에서 API를 직접 테스트하기. 테스트 화면을 PR에 첨부
 
 
-- [ ] BaseTimeEntity를 게시글에 적용하기
+- [X] BaseTimeEntity를 게시글에 적용하기
 
 
-- [ ] Like 엔티티를 만들고, 좋아요 추가/취소 API를 구현하기.
+- [X] Like 엔티티를 만들고, 좋아요 추가/취소 API를 구현하기.
   같은 유저가 같은 게시글에 중복 좋아요를 누를 수 없게 예외처리하기
 
 
@@ -146,3 +146,7 @@
 
 
 - [ ] 제목 키워드와 작성자 닉네임을 동시에 받아 동적으로 조건을 조합하기. PostRepository가 JpaRepository와 PostRepositoryCustom을 함께 상속하도록 구성하기
+
+
+## 4주차 과제
+
