@@ -1,58 +1,69 @@
 package org.sopt.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
-import org.sopt.dto.response.CommonResponse;
+import org.sopt.dto.response.BaseResponse;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.service.PostService;
 import org.sopt.dto.response.PostResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.sopt.dto.response.CommonResponse;
 import java.util.List;
 
+@Tag(name = "Post", description = "게시글 관련 API")
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/v1/posts")
 public class PostController {
     private final PostService postService;
     public PostController(PostService postService) {
         this.postService = postService;
     }
-    // POST /posts
+
+    // POST /posts -> 201 created
+    @Operation(summary = "게시글 생성", description = "새로운 게시글을 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "게시글 작성 성공"),
+            @ApiResponse(responseCode = "400", description = "유효성 검증 실패 (제목/내용 누락 또는 글자 수 초과)")
+    })
     @PostMapping
-    public ResponseEntity<CommonResponse<CreatePostResponse>> createPost(
-            @RequestBody CreatePostRequest request
+    public ResponseEntity<BaseResponse<CreatePostResponse>> createPost(
+            @Valid @RequestBody CreatePostRequest request
     ) {
-        CreatePostResponse response = postService.createPost(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.success(response));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BaseResponse.success(postService.createPost(request)));
     }
-    //얘는 201 Created!
 
-    // GET /posts
+    // GET /posts -> 200 OK
+    @Operation(summary = "게시글 조회", description = "전체 게시글을 조회합니다.")
     @GetMapping
-    //CreatePostResponse와는 달리, 게시글 하나 생성해서 응답을 하나 받는 게 아니라
-    //게시글을 전체 조회해서 응답을 여러 개 받으니까, Response를 반환받을 때, <List<>> 로 묶어주었다
-    //GET 요청은 Body 가 없다.. 그러면 Request.. 가 없다?
-    //그러면 어노테이션이 필요없..겠지?
-    public ResponseEntity<CommonResponse<List<PostResponse>>> getAllPosts( ) {
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPosts( ) {
         List<PostResponse> response = postService.getAllPosts();
-        return ResponseEntity.ok(CommonResponse.success(response));
-        //성공 시 200 OK
+        return ResponseEntity.ok(BaseResponse.success(response));
     }
 
-    // GET /posts/{id}
-    //게시글 상세 조회
+    // GET /posts/{id} -> 200 OK
+    @Operation(summary = "게시글 단건 조회", description = "게시글 ID로 특정 게시글을 조회합니다. 삭제된 게시글은 조회되지 않아요.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 — ID가 숫자가 아닌 경우수"),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음 — 존재하지 않는 ID로 요청한 경우")
+    })
     @GetMapping("/{id}")
-    // {id}로 받으려면.. @PathVariable 로 받아야한다..
-    public ResponseEntity<CommonResponse<PostResponse>> getPost(@PathVariable Long id) {
-        PostResponse response = postService.getPost(id);
-        return ResponseEntity.ok(CommonResponse.success(response));
-        //성공 시, 200 OK
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getPost(
+            @Parameter(description = "게시글 ID", example = "1", required = true)
+            @PathVariable Long id) {
+        return ResponseEntity.ok(BaseResponse.success(postService.getPost(id)));
     }
 
     // PUT /posts/{id}
-    //게시글 수정
+    @Operation(summary = "게시글 수정", description = "게시글을 수정합니다.")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePost(
             @PathVariable Long id,
@@ -60,22 +71,15 @@ public class PostController {
     ) {
         postService.updatePost(id, request);
         return ResponseEntity.noContent().build();
-
-        //여기서 200 OK 하면 성공했고, 데이터가 있다는 뜻이고
-        //204 OK는 데이터는 없다는 뜻인데, 반환할 게 없으니까 204 OK가 좀 더 맞는 것 같다.
-
-        //근데 혹시 noContent().build() [204 No Content] 와 ResponseEntity.ok().build() [200 OK] 의 차이점..이 무엇일까요..?ㅜㅜ
-        //200 OK + 데이터 없음을 표시하면 그게 204 OK.. 아닌가..해서요..!
     }
 
     //@PathVariable은 id 꺼내는 것! @RequestBody는 Body에 있는 JSON을 UpdatePostRequest 로 변환하는 것!
 
     // DELETE /posts/{id}
-    //게시글 삭제
+    @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
-    //성공 시, 204 No Content
 }

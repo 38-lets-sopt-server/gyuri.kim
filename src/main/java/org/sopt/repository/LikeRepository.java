@@ -1,0 +1,15 @@
+package org.sopt.repository;
+
+import org.sopt.domain.Like;
+import org.sopt.domain.Post;
+import org.sopt.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+//todo: 심화과제 => 같은 유저가 같은 게시글에 중복 좋아요를 누를 수 없게 예외 처리
+public interface LikeRepository extends JpaRepository<Like, Long>{
+    boolean existsByUserPost (User user, Post post);
+    Optional<Like> findByUserPost (User user, Post post);
+}

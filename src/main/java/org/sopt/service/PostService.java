@@ -5,65 +5,86 @@ import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
-import org.sopt.exception.PostNotFoundException;
+import org.sopt.exception.BadRequestException;
+import org.sopt.exception.ConflictException;
 import org.sopt.repository.UserRepository;
-import org.sopt.exception.NotFoundException;
 import org.sopt.exception.ErrorCode;
+import org.sopt.exception.NotFoundException;
 import org.sopt.domain.User;
 import org.sopt.repository.PostRepository;
+import org.sopt.validator.PostValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional (readOnly = true)
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
-    public PostService(
-            PostRepository postRepository,
-            UserRepository userRepository
-    ) {
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
     }
 
-    @Transactional
+    //얘 이렇게 DB작업과 외부 작업 분리를 하는 게 맞을까요..? 이 부분에 대해 아직 이해가 안가요ㅠㅠ
     public CreatePostResponse createPost(CreatePostRequest request) {
+        //얘는 DB작업..?
+        Long savedPostId = savePostToDb(request);
+
+        //얘는 외부 작업..?
+        try {
+            System.out.println("게시글이 저장되었습니다." + savedPostId);
+        } catch(Exception e){
+            System.err.println("에러발생! : " + e.getMessage());
+        }
+        return new CreatePostResponse(savedPostId, "게시글 등록 완료!");
+    }
+
+    @Transactional
+    public Long savePostToDb (CreatePostRequest request){
+        PostValidator.validatePost(request.title(), request.content());
+
+        if (request.title() == null || request.title().isBlank()) {
+            throw new BadRequestException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
         Post post = new Post(request.title(), request.content(), user);
         postRepository.save(post);
-        return new CreatePostResponse(post.getId(), "게시글 등록 완료!");
+
+        return post.getId();
     }
+
 
     //READ - 전체 -> 게시판 목록 확인
     /* 조회 전용 -> 더티 채킹 안 함 -> 성능 최적화*/
     @Transactional (readOnly = true)
     public List<PostResponse> getAllPosts() {
-        return postRepository.findAll()
-                .stream()
+        return postRepository.findAll().stream()
                 .map(PostResponse::from)
                 .toList();
     }
 
     // READ - 단건 -> 특정 글 가져와서 상세 내용 보여주기 -> 원본 꺼내고 검증하고, 반환하기
     @Transactional(readOnly = true)
-    public PostResponse getPost(Long id) {
-        // Optional 로 수정.
+    public List<PostResponse> getPost(Long id) {
+        List<Post> posts = postRepository.findWithUserLikes();
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        //"new"가 아니라, DB가 이제는 있으니까, 그냥 response from post하면 된다.
-        //Q. 그러면 반환해올 때, id, title, content, author, createdat은 안 가져와도 되나?
-        return PostResponse.from(post);
+        return posts.stream()
+                .map(PostResponse::from)
+                .toList();
     }
 
     // UPDATE
     @Transactional
     /*3주차 세미나 변경 사항_ 더티체킹으로 save 없이 자동 update한다. */
     public PostResponse updatePost(Long id, UpdatePostRequest request) { //파라미터 변경함
+        PostValidator.validatePost(request.title(), request.content());
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         post.update(request.title(), request.content());
@@ -71,9 +92,10 @@ public class PostService {
     }
 
     // DELETE
+    @Transactional
     public void deletePost(Long id) {
-        postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException(id));
-        postRepository.deleteById(id);
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        postRepository.delete(post);
     }
 }
