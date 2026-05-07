@@ -40,6 +40,7 @@ public class LikeService {
         Like like = likeRepository.save(new Like(user, post));
         return like.getId();
     }
+    //likeRepository.saveAndFlush(like); 성휘님
 
     @Transactional
     public void deleteLike(Long userId, Long postId) {
