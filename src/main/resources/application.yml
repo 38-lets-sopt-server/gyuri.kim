@@ -21,10 +21,10 @@ spring:
 
       spring:
         datasource:
-          url: jdbc:mysql://seobseob-rds-1.cjukuk0we4kl.ap-northeast-2.rds.amazonaws.com:3306/assignment?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+          url: jdbc:mysql://{RDS 엔드포인트}:3306/assignment
           driver-class-name: com.mysql.cj.jdbc.Driver
-          username: admin
-          password: Gyuri5578!!
+          username: 
+          password: 
 
         jpa:
           hibernate:
