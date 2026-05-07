@@ -71,13 +71,10 @@ public class PostService {
 
     // READ - 단건 -> 특정 글 가져와서 상세 내용 보여주기 -> 원본 꺼내고 검증하고, 반환하기
     @Transactional(readOnly = true)
-    public List<PostResponse> getPost(Long id) {
-        List<Post> posts = postRepository.findWithUserLikes();
+    public PostResponse getPost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return posts.stream()
-                .map(PostResponse::from)
-                .toList();
+        return PostResponse.from(post);
     }
 
     // UPDATE
