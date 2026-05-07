@@ -30,7 +30,8 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "새로운 게시글을 등록합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "게시글 작성 성공"),
-            @ApiResponse(responseCode = "400", description = "유효성 검증 실패 (제목/내용 누락 또는 글자 수 초과)")
+            @ApiResponse(responseCode = "400", description = "유효성 검증 실패 (제목/내용 누락 또는 글자 수 초과)"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자 ID로 요청한 경우")
     })
     @PostMapping
     public ResponseEntity<BaseResponse<CreatePostResponse>> createPost(
@@ -56,7 +57,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음 — 존재하지 않는 ID로 요청한 경우")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<List<PostResponse>>> getPost(
+    public ResponseEntity<BaseResponse<PostResponse>> getPost(
             @Parameter(description = "게시글 ID", example = "1", required = true)
             @PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.success(postService.getPost(id)));

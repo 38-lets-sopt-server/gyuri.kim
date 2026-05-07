@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "likes")
+//[성휘님 코드리뷰]uniqueConstraints로 구현해보기
 
 public class Like {
     @Id

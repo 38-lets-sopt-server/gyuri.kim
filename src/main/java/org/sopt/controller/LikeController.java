@@ -23,6 +23,7 @@ public class LikeController {
     //여기서는 apiresponse 안 받아도 될까요..? 받아야 할까요..?
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "좋아요 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청(userId가 없거나 요청 본문 형식이 올바르지 않습니다)"),
             @ApiResponse(responseCode = "404", description = "유저나 게시글 없음"),
             @ApiResponse(responseCode = "409", description = "이미 좋아요를 누름")
     })
@@ -37,6 +38,7 @@ public class LikeController {
     @Operation(summary = "좋아요 취소", description = "게시글의 좋아요를 취소합니다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "취소 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 - userId가 없거나 요청 파라미터 형식이 올바르지 않습니다"),
             @ApiResponse(responseCode = "404", description = "좋아요를 누르지 않음")
     })
     @DeleteMapping("/posts/{postId}/likes")
