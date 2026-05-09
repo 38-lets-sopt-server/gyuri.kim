@@ -12,9 +12,7 @@ import java.util.List;
 //fetch join 적용해보기!
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("SELECT DISTINCT p FROM Post p " +
-    "JOIN FETCH p.user" +
-    "LEFT JOIN FETCH p.likes")
+    @Query("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.user LEFT JOIN FETCH p.likes")
     List<Post> findWithUserLikes();
 }
 //distinct를 사용해서 JPA가 중복된 Post 엔티티들을 하나로 합치게 했다
