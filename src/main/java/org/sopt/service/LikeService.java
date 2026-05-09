@@ -34,7 +34,7 @@ public class LikeService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         // 중복 체크
-        if (likeRepository.existsByUserPost(user, post)) {
+        if (likeRepository.existsByUserAndPost(user, post)) {
             throw new ConflictException(ErrorCode.LIKE_ALREADY_EXISTS);
         }
         Like like = likeRepository.save(new Like(user, post));
@@ -49,7 +49,7 @@ public class LikeService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
-        Like like = likeRepository.findByUserPost(user, post)
+        Like like = likeRepository.findByUserAndPost(user, post)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.LIKE_NOT_FOUND));
 
         likeRepository.delete(like);

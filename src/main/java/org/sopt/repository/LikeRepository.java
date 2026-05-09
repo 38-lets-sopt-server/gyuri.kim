@@ -10,6 +10,6 @@ import java.util.Optional;
 
 //todo: 심화과제 => 같은 유저가 같은 게시글에 중복 좋아요를 누를 수 없게 예외 처리
 public interface LikeRepository extends JpaRepository<Like, Long>{
-    boolean existsByUserPost (User user, Post post);
-    Optional<Like> findByUserPost (User user, Post post);
+    boolean existsByUserAndPost (User user, Post post);
+    Optional<Like> findByUserAndPost (User user, Post post);
 }
