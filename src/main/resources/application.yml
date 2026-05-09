@@ -3,10 +3,10 @@ spring:
     allow-bean-definition-overriding: true
 
   datasource:
-    url: jdbc:mysql://__:3306/assignment?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://seobseob-rds-1.cjukuk0we4kl.ap-northeast-2.rds.amazonaws.com:3306/assignment
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username:
-    password:
+    username: admin
+    password: Gyuri5578!!
 
   jpa:
     hibernate:
