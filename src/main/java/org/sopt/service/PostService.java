@@ -5,7 +5,6 @@ import org.sopt.dto.request.CreatePostRequest;
 import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
-import org.sopt.exception.BadRequestException;
 import org.sopt.repository.UserRepository;
 import org.sopt.exception.ErrorCode;
 import org.sopt.exception.NotFoundException;
@@ -41,10 +40,6 @@ public class PostService {
     @Transactional
     public Long savePostToDb (CreatePostRequest request){
         PostValidator.validatePost(request.title(), request.content());
-
-        if (request.title() == null || request.title().isBlank()) {
-            throw new BadRequestException(ErrorCode.INVALID_INPUT_VALUE);
-        }
 
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));

@@ -66,12 +66,12 @@ public class PostController {
     // PUT /posts/{id}
     @Operation(summary = "게시글 수정", description = "게시글을 수정합니다.")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePost(
+    public ResponseEntity<BaseResponse<PostResponse>> updatePost(
             @PathVariable Long id,
             @RequestBody UpdatePostRequest request
     ) {
-        postService.updatePost(id, request);
-        return ResponseEntity.noContent().build();
+        PostResponse response = postService.updatePost(id, request);
+        return ResponseEntity.ok(BaseResponse.success(response));
     }
 
     //@PathVariable은 id 꺼내는 것! @RequestBody는 Body에 있는 JSON을 UpdatePostRequest 로 변환하는 것!
