@@ -6,7 +6,6 @@ import org.sopt.dto.request.UpdatePostRequest;
 import org.sopt.dto.response.CreatePostResponse;
 import org.sopt.dto.response.PostResponse;
 import org.sopt.exception.BadRequestException;
-import org.sopt.exception.ConflictException;
 import org.sopt.repository.UserRepository;
 import org.sopt.exception.ErrorCode;
 import org.sopt.exception.NotFoundException;
@@ -28,12 +27,9 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
-    //얘 이렇게 DB작업과 외부 작업 분리를 하는 게 맞을까요..? 이 부분에 대해 아직 이해가 안가요ㅠㅠ
+    @Transactional
     public CreatePostResponse createPost(CreatePostRequest request) {
-        //얘는 DB작업..?
         Long savedPostId = savePostToDb(request);
-
-        //얘는 외부 작업..?
         try {
             System.out.println("게시글이 저장되었습니다." + savedPostId);
         } catch(Exception e){
